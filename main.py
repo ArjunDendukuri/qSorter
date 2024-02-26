@@ -58,14 +58,13 @@ def finish() -> bool:
     chapy = chapter_name.get()
 
     if len(chapy.split(",")) > 1:
-        answer_png_name: str | None  = None
+        answer_png_name: str | None = None
         for chS in chapy.split(","):
             ch = chS.strip()
             if ch not in chapters:
                 indicator_label.config(text="Invalid chapter", fg="#c70202", font=("Verdana", 20))
                 return False
             else:
-                #replace(f"{images[select]}", f"{out}\\{code}\\{ch}\\questions\\{img_name}")  # moves question
                 copy2(f"{images[select]}", f"{out}\\{code}\\{ch}\\questions\\{img_name}")
 
                 try:
@@ -80,8 +79,7 @@ def finish() -> bool:
                     copy2(f"{folder}\\answers\\{answer_png_name}",
                           f"{out}\\{code}\\{ch}\\answers\\{answer_png_name}")
 
-                except (FileNotFoundError, NotImplementedError) as e:
-                    print(e)
+                except (FileNotFoundError, NotImplementedError):
                     print(f"Failed to move answer ({images[select]})")
 
         remove(images[select])
@@ -90,9 +88,7 @@ def finish() -> bool:
         indicator_label.config(text="Press enter to go to next", fg="#000000", font=("Verdana", 20))
         return True
 
-
-
-    #~~~~~~~~
+    # ~~~~~~~~
     if not chapy:
         indicator_label.config(text="Enter a chapter name fool", fg="#c70202", font=("Verdana", 20))
         return False
@@ -101,7 +97,7 @@ def finish() -> bool:
         return False
 
     if not chapy.lower() == "s":
-        replace(f"{images[select]}", f"{out}\\{code}\\{chapy}\\questions\\{img_name}") #moves question
+        replace(f"{images[select]}", f"{out}\\{code}\\{chapy}\\questions\\{img_name}")  # moves question
 
         try:
             a_name_list = list(images[select].split("\\")[-1])
@@ -111,15 +107,15 @@ def finish() -> bool:
                 a_name_list[-7] = 'A'
             answer_png_name = "".join(a_name_list)
 
-            replace(f"{folder}\\answers\\{answer_png_name}", f"{out}\\{code}\\{chapy}\\answers\\{answer_png_name}")  # moves answer
-        except (NotImplementedError, FileNotFoundError) as e:
-            print(e)
+            replace(f"{folder}\\answers\\{answer_png_name}",
+                    f"{out}\\{code}\\{chapy}\\answers\\{answer_png_name}")  # moves answer
+        except (NotImplementedError, FileNotFoundError):
             print(f"Failed to move answer ({images[select]})")
     else:
         remove(images[select])
 
     chapter_name.set("")
-    indicator_label.config(text="Press enter to go to next",fg="#000000", font=("Verdana", 20))
+    indicator_label.config(text="Press enter to go to next", fg="#000000", font=("Verdana", 20))
     return True
 
 
@@ -138,9 +134,9 @@ def next_img():
 
 def handle_chapter_dirs():
     global code, chapters
-    code = "0606"  # input("Enter subject code (with initial 0; 0606 not 606)\n")
+    code = input("Enter subject code (with initial 0; 0606 not 606)\n")
     print("Enter chapter dirs seperated by a (,)")
-    chapter_names = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"  # input("Example: 1,2,3 or A1,A2,B2\n")
+    chapter_names = input("Example: 1,2,3 or A1,A2,B2\n")
     chapters = [ch.strip() for ch in chapter_names.split(",") if ch.strip()]
 
     for ch in chapters:
@@ -152,10 +148,12 @@ def handle_chapter_dirs():
 
 
 if __name__ == "__main__":
-    folder = f"ARJUN"  # f"{input('Enter your name\n').upper()}\\questions"
+    folder = {input('Enter your name\n').upper()}
     try:
         images = [f"{folder}\\questions\\{img_path}" for img_path in listdir(f"{folder}\\questions")
-                  if path.isfile(f"{folder}\\questions\\{img_path}") and path.splitext(f"{folder}\\questions\\{img_path}")[1] == ".png"]
+                  if
+                  path.isfile(f"{folder}\\questions\\{img_path}") and path.splitext(f"{folder}\\questions\\{img_path}")[
+                      1] == ".png"]
 
         if not path.exists(f"{folder}\\answers"):
             raise FileNotFoundError()
@@ -175,5 +173,5 @@ if __name__ == "__main__":
     print("Enter chapters in textbox")
     print("If multiple seperate them with a comma")
     print("If the question is outdated/isn't in the syllabus anymore enter 's' as the chapter")
-    #input(f"Press enter to begin, {folder}")
+    input(f"Press enter to begin, {folder}")
     tkcreate()
