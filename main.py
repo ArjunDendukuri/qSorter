@@ -1,4 +1,5 @@
-from os import path, listdir, mkdir, makedirs, replace, remove
+import os
+from os import path, listdir, mkdir, makedirs, replace, remove, name
 from tkinter import Tk, Label, StringVar, Entry, Event
 from shutil import copy2
 
@@ -6,6 +7,7 @@ from PIL import ImageTk, Image
 
 folder = ""
 out = "out"
+sep = "\\" if os.name == "nt" else "/"
 
 select: int
 root: Tk
@@ -53,7 +55,7 @@ def key_in(key: Event):
 
 def finish() -> bool:
     global chapter_name, chapters
-    img_name = images[select].split("\\")[-1]
+    img_name = images[select].split("{sep}")[-1]
 
     chapy = chapter_name.get()
 
@@ -65,25 +67,25 @@ def finish() -> bool:
                 indicator_label.config(text="Invalid chapter", fg="#c70202", font=("Verdana", 20))
                 return False
             else:
-                copy2(f"{images[select]}", f"{out}\\{code}\\{ch}\\questions\\{img_name}")
+                copy2(f"{images[select]}", f"{out}{sep}{code}{sep}{ch}{sep}questions{sep}{img_name}")
 
                 try:
                     if not answer_png_name:
-                        a_name_list = list(images[select].split("\\")[-1])
+                        a_name_list = list(images[select].split("{sep}")[-1])
                         if not a_name_list[-6].isnumeric():
                             a_name_list[-6] = 'A'
                         else:
                             a_name_list[-7] = 'A'
                         answer_png_name = "".join(a_name_list)
 
-                    copy2(f"{folder}\\answers\\{answer_png_name}",
-                          f"{out}\\{code}\\{ch}\\answers\\{answer_png_name}")
+                    copy2(f"{folder}{sep}answers{sep}{answer_png_name}",
+                          f"{out}{sep}{code}{sep}{ch}{sep}answers{sep}{answer_png_name}")
 
                 except (FileNotFoundError, NotImplementedError):
                     print(f"Failed to move answer ({images[select]})")
 
         remove(images[select])
-        remove(f"{folder}\\answers\\{answer_png_name}")
+        remove(f"{folder}{sep}answers{sep}{answer_png_name}")
         chapter_name.set("")
         indicator_label.config(text="Press enter to go to next", fg="#000000", font=("Verdana", 20))
         return True
@@ -97,18 +99,18 @@ def finish() -> bool:
         return False
 
     if not chapy.lower() == "s":
-        replace(f"{images[select]}", f"{out}\\{code}\\{chapy}\\questions\\{img_name}")  # moves question
+        replace(f"{images[select]}", f"{out}{sep}{code}{sep}{chapy}{sep}questions{sep}{img_name}")  # moves question
 
         try:
-            a_name_list = list(images[select].split("\\")[-1])
+            a_name_list = list(images[select].split("{sep}")[-1])
             if not a_name_list[-6].isnumeric():
                 a_name_list[-6] = 'A'
             else:
                 a_name_list[-7] = 'A'
             answer_png_name = "".join(a_name_list)
 
-            replace(f"{folder}\\answers\\{answer_png_name}",
-                    f"{out}\\{code}\\{chapy}\\answers\\{answer_png_name}")  # moves answer
+            replace(f"{folder}{sep}answers{sep}{answer_png_name}",
+                    f"{out}{sep}{code}{sep}{chapy}{sep}answers{sep}{answer_png_name}")  # moves answer
         except (NotImplementedError, FileNotFoundError):
             print(f"Failed to move answer ({images[select]})")
     else:
@@ -140,22 +142,22 @@ def handle_chapter_dirs():
     chapters = [ch.strip() for ch in chapter_names.split(",") if ch.strip()]
 
     for ch in chapters:
-        if not path.exists(f"{out}\\{code}\\{ch}\\questions"):
-            makedirs(f"{out}\\{code}\\{ch}\\questions")
+        if not path.exists(f"{out}{sep}{code}{sep}{ch}{sep}questions"):
+            makedirs(f"{out}{sep}{code}{sep}{ch}{sep}questions")
 
-        if not path.exists(f"{out}\\{code}\\{ch}\\answers"):
-            makedirs(f"{out}\\{code}\\{ch}\\answers")
+        if not path.exists(f"{out}{sep}{code}{sep}{ch}{sep}answers"):
+            makedirs(f"{out}{sep}{code}{sep}{ch}{sep}answers")
 
 
 if __name__ == "__main__":
     folder = input('Enter your name\n').upper()
     try:
-        images = [f"{folder}\\questions\\{img_path}" for img_path in listdir(f"{folder}\\questions")
+        images = [f"{folder}{sep}questions{sep}{img_path}" for img_path in listdir(f"{folder}{sep}questions")
                   if
-                  path.isfile(f"{folder}\\questions\\{img_path}") and path.splitext(f"{folder}\\questions\\{img_path}")[
+                  path.isfile(f"{folder}{sep}questions{sep}{img_path}") and path.splitext(f"{folder}{sep}questions{sep}{img_path}")[
                       1] == ".png"]
 
-        if not path.exists(f"{folder}\\answers"):
+        if not path.exists(f"{folder}{sep}answers"):
             raise FileNotFoundError()
     except FileNotFoundError:
         print("Improper file structure")
