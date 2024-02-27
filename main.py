@@ -148,7 +148,7 @@ def handle_chapter_dirs():
 
 
 if __name__ == "__main__":
-    folder = {input('Enter your name\n').upper()}
+    folder = input('Enter your name\n').upper()
     try:
         images = [f"{folder}\\questions\\{img_path}" for img_path in listdir(f"{folder}\\questions")
                   if
