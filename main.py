@@ -47,7 +47,7 @@ def tkcreate():
 
 def key_in(key: Event):
     global images, select
-    if key.keycode == 13:
+    if key.keycode == (13 if sep == "\\" else 603979789):
         if finish():
             select = min(len(images), select + 1)
             next_img()
@@ -55,7 +55,7 @@ def key_in(key: Event):
 
 def finish() -> bool:
     global chapter_name, chapters
-    img_name = images[select].split("{sep}")[-1]
+    img_name = images[select].split(sep)[-1]
 
     chapy = chapter_name.get()
 
@@ -71,7 +71,7 @@ def finish() -> bool:
 
                 try:
                     if not answer_png_name:
-                        a_name_list = list(images[select].split("{sep}")[-1])
+                        a_name_list = list(images[select].split(sep)[-1])
                         if not a_name_list[-6].isnumeric():
                             a_name_list[-6] = 'A'
                         else:
@@ -102,7 +102,7 @@ def finish() -> bool:
         replace(f"{images[select]}", f"{out}{sep}{code}{sep}{chapy}{sep}questions{sep}{img_name}")  # moves question
 
         try:
-            a_name_list = list(images[select].split("{sep}")[-1])
+            a_name_list = list(images[select].split(sep)[-1])
             if not a_name_list[-6].isnumeric():
                 a_name_list[-6] = 'A'
             else:
